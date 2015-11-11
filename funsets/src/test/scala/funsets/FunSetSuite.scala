@@ -110,5 +110,21 @@ class FunSetSuite extends FunSuite {
     }
   }
 
+  test("forall evens and odds") {
+    new TestSets {
+      val s = union(union(singletonSet(2), singletonSet(4)), singletonSet(6))
+      assert(forall(s, x => (x % 2) == 0))
+      assert(!forall(s, x => (x % 2) != 0))
+    }
+  }
+
+  test("check for existance in the bound interval") {
+    new TestSets {
+      val s = union(union(s1, s2), s3)
+      assert(exists(s, x => x < 4))
+      assert(exists(s, x => contains(s3, x)))
+//      assert(!exists(s, x => x > 4))
+    }
+  }
 
 }
