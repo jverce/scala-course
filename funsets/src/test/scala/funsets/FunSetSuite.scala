@@ -123,7 +123,32 @@ class FunSetSuite extends FunSuite {
       val s = union(union(s1, s2), s3)
       assert(exists(s, x => x < 4))
       assert(exists(s, x => contains(s3, x)))
-//      assert(!exists(s, x => x > 4))
+      assert(!exists(s, x => x > 4))
+    }
+  }
+  
+  test("test for equals") {
+    new TestSets {
+      val s = union(union(s1, s2), s3)
+      val sDouble = union(union(singletonSet(2), singletonSet(4)), singletonSet(6))
+      val sTriple = union(union(singletonSet(3), singletonSet(6)), singletonSet(9))
+      val sNeg = union(union(singletonSet(-1), singletonSet(-2)), singletonSet(-3))    
+      assert(equalSets(s, s))    
+      assert(equalSets(sDouble, sDouble))    
+      assert(!equalSets(sNeg, sTriple))    
+      assert(!equalSets(sNeg, s))
+    }
+  }
+
+  test("duplicate, triplicate and negative") {
+    new TestSets {
+      val s = union(union(s1, s2), s3)
+      val sDouble = union(union(singletonSet(2), singletonSet(4)), singletonSet(6))
+      val sTriple = union(union(singletonSet(3), singletonSet(6)), singletonSet(9))
+      val sNeg = union(union(singletonSet(-1), singletonSet(-2)), singletonSet(-3))
+      assert(equalSets(map(s, x => 2 * x), sDouble))
+      assert(equalSets(map(s, x => 3 * x), sTriple))
+      assert(equalSets(map(s, x => -x), sNeg))
     }
   }
 

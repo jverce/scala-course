@@ -23,6 +23,11 @@ object FunSets {
   def singletonSet(elem: Int): Set = x => x == elem
 
   /**
+   * Returns the set of the one given element.
+   */
+  def emptySet: Set = x => false
+
+  /**
    * Returns the union of the two given sets,
    * the sets of all elements that are in either `s` or `t`.
    */
@@ -48,14 +53,14 @@ object FunSets {
   /**
    * The bounds for `forall` and `exists` are +/- 1000.
    */
-  val bound = 5
+  val bound = 6
 
   /**
    * Returns whether all bounded integers within `s` satisfy `p`.
    */
   def forall(s: Set, p: Int => Boolean): Boolean = {
     def iter(a: Int): Boolean = {
-      if (a == bound) if (s(a)) p(a) else true
+      if (a > bound) true
       else if (s(a)) p(a) && iter(a + 1)
       else iter(a + 1)
     }
@@ -66,12 +71,35 @@ object FunSets {
    * Returns whether there exists a bounded integer within `s`
    * that satisfies `p`.
    */
-  def exists(s: Set, p: Int => Boolean): Boolean = forall(s, x => s(x) && p(x))
+  def exists(s: Set, p: Int => Boolean): Boolean = {
+    def iter(a: Int): Boolean = {
+      if (a > bound) false
+      else if (s(a)) p(a) || iter(a + 1)
+      else iter(a + 1)
+    }
+    iter(-bound)
+  }
 
   /**
    * Returns a set transformed by applying `f` to each element of `s`.
    */
-  def map(s: Set, f: Int => Int): Set = ???
+  def map(s: Set, f: Int => Int): Set = {
+    def iter(accum: Set, a: Int): Set = {
+      if (a > bound) accum
+      else if (s(a)) iter(union(accum, singletonSet(f(a))), a + 1)
+      else iter(accum, a + 1)
+    }
+    iter(emptySet, -bound)
+  }
+  
+  def equalSets(s: Set, t: Set): Boolean = {
+    def iter(a: Int): Boolean = {
+      if (a > bound) true
+      else if (s(a) ^ t(a)) false
+      else iter(a + 1)
+    }
+    iter(-bound)    
+  }
 
   /**
    * Displays the contents of a set
